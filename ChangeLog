@@ -1,0 +1,11 @@
+Nov 21 - release 0.2
+
+check_dnsauth fixes
+ - use answer section of response only
+ - report ERROR or NXDOMAIN only once
+ - don't include getopt.h or clear optind
+ - fix thinko in location of socket open
+
+added ChangeLog
+
+Nov 20 - release 0.1
