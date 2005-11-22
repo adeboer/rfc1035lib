@@ -25,7 +25,6 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>
-#include <getopt.h>
 #include <string.h>
 
 #include "rfc1035.h"
@@ -55,7 +54,6 @@ int main(int argc, char **argv) {
 	int authq = 0;
 	int prand;
 	int i;
-	optind = 0;
 	prand = getpid();
 
 	while(1) {

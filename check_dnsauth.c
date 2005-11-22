@@ -25,7 +25,6 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <errno.h>
-#include <getopt.h>
 #include <string.h>
 #include <stdlib.h>
 #include <arpa/inet.h>
@@ -207,7 +206,6 @@ void usage() {
 int main(int argc, char **argv) {
 	char *s;
 	int i;
-	optind = 0;
 
 	while(1) {
 		switch(getopt(argc, argv, "w:At:n:N:Ce:d")) {
@@ -254,6 +252,10 @@ int main(int argc, char **argv) {
 
 	if (!who) usage();
 
+	dnsfd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+	if (dnsfd == -1) barf("socket");
+	if (fcntl(dnsfd, F_SETFL, O_NONBLOCK) == -1) barf("fcntl");
+
 	sloop();
 	endgame();
 	}
@@ -271,8 +273,6 @@ int sendqueries() {
 		if (tns->resprec == 0) {
 			qid = prand++;
 			rlen = dnsencode(who, buf, qid, authq?0:1, qtype, 1);
-			dnsfd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-			if (dnsfd == -1) barf("socket");
 			bzero(&sadr, sizeof(sadr));
 			sadr.sin_family = AF_INET;
 			sadr.sin_port = htons(53);
@@ -301,7 +301,7 @@ void dnsrec(unsigned char *buf, int blen, int rind, int nameoff, unsigned int rt
 	if (debug) printf("%s", rc < 0 ? "ERROR" : sbuf);
 	rc = dnsrrstr(buf, blen, rtype, rclass, rsize, recoff, sbuf, sizeof(sbuf));
 	if (debug) printf(" - %s %s\n", aty[rind], rc ? "ERROR" : sbuf);
-	if (rc == 0 && rind > 0) {
+	if (rc == 0 && rind == 1) {
 		struct rrnode *prr = findrr(sbuf);
 		prr->bits |= nsp->npos;
 		}
@@ -315,7 +315,7 @@ void my_read() {
 	if (blen == -1) barf("read");
 	qid = dnsgetid(buf);
 	rc = dnsgetrcode(buf);
-	if (debug) fprintf(stderr, "got response %d %d\n", qid, rc);
+	if (debug) fprintf(stderr, "got response %d %d (bytes %d)\n", qid, rc, blen);
 	nsp = nshead;
 	while(nsp) {
 		if (nsp->queryno == qid) {
@@ -325,13 +325,9 @@ void my_read() {
 				nsp->resprec = 1;
 				}
 			else if (rc == 3) {
-				struct rrnode *prr = findrr("NXDOMAIN");
-				prr->bits |= nsp->npos;
 				nsp->resprec = -3;
 				}
 			else {
-				struct rrnode *prr = findrr("ERROR");
-				prr->bits |= nsp->npos;
 				nsp->resprec = -1;
 				}
 			break;
