@@ -1,0 +1,17 @@
+This is a library that implements encoding and parsing of DNS queries
+and responses, per RFC 1035.
+
+Documentation of library functions is found in rfc1035.h, along with
+the declarations of those functions.  They are implemented in rfc1035.c
+
+testdns.c is a simple program for doing a query and looking at the result.
+
+check_dnsauth.c is a more complex example; it acts as a Nagios check
+and will query a set of nameservers and verify their consistency.
+
+See TODO for caveats.
+
+This is GPL'ed.
+
+Regards,
+adb

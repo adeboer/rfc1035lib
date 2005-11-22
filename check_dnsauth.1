@@ -1,0 +1,78 @@
+.TH check_dnsauth 1 "Utilities"
+.UC 4
+
+.SH NAME
+check_dnsauth - check authoritative DNS records for consistency
+
+.SH DESCRIPTION
+This Nagios plugin does an arbitrary DNS query against a specified
+nameserver or nameservers and generates alerts if any servers fail
+to reponse, if they respond with errors, or if the data returned
+is not consistent between servers and optionally also consistent
+with templated expectations.
+
+.SH OPTIONS
+
+.TP
+.B -w target
+specifies the name that will be looked up.  An example might look like
+"www.example.com".
+
+.TP
+.B -t type
+specifies the type of record that will be requested.  Default is type
+A, but other choices include NS, MX, PTR, and the like.
+
+.TP
+.B -A
+specifies that only authoritative records are requested (disables the
+recursion-desired flag in the query).
+
+.TP
+.B -n nsname:ipno
+specifies the colloquial nodename and the IP address of a nameserver to
+be queried.  An example might be "myns:192.168.1.1".  Queries will be
+directed at the IP address specified, and the colloquial name will be
+used in output.  Failure from this nameserver will rate a WARNING.
+
+.TP
+.B -N nsname:ipno
+As above, but failure of this nameserver is a CRITICAL result.
+
+.TP
+.B -e expectation
+specifies an expectation template entry.  You might say -e 'A 10.9.8.7'
+or -e 'CNAME server.example.org'.  Using this option one or more times
+creates a virtual nameserver colloquially called "_expect" that responded
+with these records for purpose of comparing with the answers from the
+real nameserver(s).
+
+.TP
+.B -C
+specifies that disagreement between nameservers is CRITICAL.  Default
+makes this condition a WARNING.
+
+.TP
+.B -d
+specifies debugging, which causes various cryptic output.
+
+.SH AUTHOR
+Anthony de Boer <adb@leftmind.net>
+
+.SH LICENSE
+
+Copyright (C) 2005 Anthony de Boer
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of version 2 of the GNU General Public License as
+published by the Free Software Foundation.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+

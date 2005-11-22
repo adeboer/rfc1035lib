@@ -1,0 +1,10 @@
+COPYING
+MANIFEST
+Makefile
+README
+TODO
+check_dnsauth.1
+check_dnsauth.c
+rfc1035.c
+rfc1035.h
+testdns.c

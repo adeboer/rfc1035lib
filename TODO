@@ -1,0 +1,11 @@
+TODO:
+
+Some of the more complicated RR parsing routines, like SOA and HINFO,
+are not implemented yet.
+
+A merry chase through the later RFCs to implement their new tricks would
+be useful.
+
+If records outside the IN (Internet) domain are still useful, coding to
+parse them could be relevant.
+
