@@ -16,7 +16,7 @@
 #  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 package = rfc1035lib
-version = 0.2
+version = 0.3
 testdns_obj = rfc1035.o testdns.o
 check_dnsauth_obj = rfc1035.o check_dnsauth.o
 pv = $(package)-$(version)

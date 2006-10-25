@@ -1,4 +1,10 @@
-Nov 21 - release 0.2
+Oct 25 2006 - release 0.3
+
+ - considered LGPL, decided against it (sorry PdaS)
+ - fixed fcntl() calling (moment of silence for WRS)
+ - fixed bug with query IDs in check_dnsauth (thanks Shayne for spotting it)
+
+Nov 21 2005 - release 0.2
 
 check_dnsauth fixes
  - use answer section of response only
@@ -8,4 +14,4 @@ check_dnsauth fixes
 
 added ChangeLog
 
-Nov 20 - release 0.1
+Nov 20 2005 - release 0.1
