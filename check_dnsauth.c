@@ -1,6 +1,6 @@
 /* check_dnsauth.c
 
-  Copyright (C) 2005 Anthony de Boer
+  Copyright (C) 2005,2006 Anthony de Boer
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of version 2 of the GNU General Public License as
@@ -61,6 +61,7 @@ int authq = 0;
 int qtype = 1;
 int debug = 0;
 int syncsev = WARNBIT;
+int prand;
 
 void sloop();
 
@@ -91,7 +92,7 @@ void newns(char *name, int crit) {
 	tns->nsname = scp;
 	tns->nsip = p;
 	tns->next = nshead;
-	tns->queryno = 0;
+	tns->queryno = prand++;
 	tns->npos = nbit;
 	tns->critns = crit ? CRITBIT : WARNBIT;
 	tns->resprec = strcmp(scp, "_expect") ? 0 : 1;
@@ -206,6 +207,9 @@ void usage() {
 int main(int argc, char **argv) {
 	char *s;
 	int i;
+	int flags;
+
+	prand = getpid();
 
 	while(1) {
 		switch(getopt(argc, argv, "w:At:n:N:Ce:d")) {
@@ -254,7 +258,11 @@ int main(int argc, char **argv) {
 
 	dnsfd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 	if (dnsfd == -1) barf("socket");
-	if (fcntl(dnsfd, F_SETFL, O_NONBLOCK) == -1) barf("fcntl");
+
+	/* see UNPv2 p58 */
+	if ((flags = fcntl(dnsfd, F_GETFL, 0)) == -1) barf("fcntl F_GETFL");
+	flags |= O_NONBLOCK;
+	if (fcntl(dnsfd, F_SETFL, flags) == -1) barf("fcntl F_SETFL");
 
 	sloop();
 	endgame();
@@ -271,7 +279,7 @@ int sendqueries() {
 
 	while(tns) {
 		if (tns->resprec == 0) {
-			qid = prand++;
+			qid = tns->queryno;
 			rlen = dnsencode(who, buf, qid, authq?0:1, qtype, 1);
 			bzero(&sadr, sizeof(sadr));
 			sadr.sin_family = AF_INET;
@@ -281,7 +289,6 @@ int sendqueries() {
 				upchuck("Bad IP number", tns->nsip);
 				}
 			sadr.sin_addr.s_addr = ipno;
-			tns->queryno = qid;
 			rc = sendto(dnsfd, buf, rlen, 0, (struct sockaddr *)&sadr, sizeof(sadr));
 			if (rc == -1) barf("sendto");
 			if (debug) fprintf(stderr, "send packet %d to %s\n", qid, tns->nsip);
