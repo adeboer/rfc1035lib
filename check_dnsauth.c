@@ -92,7 +92,7 @@ void newns(char *name, int crit) {
 	tns->nsname = scp;
 	tns->nsip = p;
 	tns->next = nshead;
-	tns->queryno = prand++;
+	tns->queryno = prand++ & 0xffff;
 	tns->npos = nbit;
 	tns->critns = crit ? CRITBIT : WARNBIT;
 	tns->resprec = strcmp(scp, "_expect") ? 0 : 1;

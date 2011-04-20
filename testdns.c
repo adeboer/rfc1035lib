@@ -26,6 +26,7 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <string.h>
+#include <stdlib.h>
 
 #include "rfc1035.h"
 
@@ -90,7 +91,7 @@ int main(int argc, char **argv) {
 		usage();
 		}
 
-	rlen = dnsencode(who, buf, prand++, authq?0:1, qtype, 1);
+	rlen = dnsencode(who, buf, prand++ & 0xffff, authq?0:1, qtype, 1);
 	my_log_data (buf, rlen);
 
 	dnsfd = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
