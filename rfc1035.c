@@ -17,6 +17,10 @@
 
 */
 
+#include <string.h>
+#include <unistd.h>
+#include <stdio.h>
+
 #include "rfc1035.h"
 
 int dnsencode(char *name, char *buf, int id, int rd, int qtype, int qclass) {
