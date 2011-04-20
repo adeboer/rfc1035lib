@@ -57,7 +57,7 @@ int main(int argc, char **argv) {
 	prand = getpid();
 
 	while(1) {
-		switch(getopt(argc, argv, "w:At:")) {
+		switch(getopt(argc, argv, "+w:At:")) {
 			case 'w':
 				who = strdup(optarg);
 				break;

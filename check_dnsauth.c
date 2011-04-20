@@ -212,7 +212,7 @@ int main(int argc, char **argv) {
 	prand = getpid();
 
 	while(1) {
-		switch(getopt(argc, argv, "w:At:n:N:Ce:d")) {
+		switch(getopt(argc, argv, "+w:At:n:N:Ce:d")) {
 			case 'w':
 				who = strdup(optarg);
 				break;
